@@ -146,6 +146,12 @@
     </div>
   </div>
 
+   <button class="continue-btn" id="continueBtn" disabled>
+        Continue
+      </button>
+    </div>
+  </div>
+
   <script>
     const artists = document.querySelectorAll('.artist');
     const button = document.getElementById('continueBtn');
@@ -162,36 +168,17 @@
     });
 
     button.addEventListener('click', () => {
-      <script>
-  const artists = document.querySelectorAll('.artist');
-  const button = document.getElementById('continueBtn');
-  let selectedArtist = null;
+      if (!selectedArtist) return;
 
-  artists.forEach(artist => {
-    artist.addEventListener('click', () => {
-      artists.forEach(a => a.classList.remove('selected'));
-      artist.classList.add('selected');
-      selectedArtist = artist.textContent;
-      button.disabled = false;
-      button.classList.add('enabled');
-    });
-  });
+      const encodedArtist = encodeURIComponent(selectedArtist);
 
-  button.addEventListener('click', () => {
-    if (!selectedArtist) return;
+      // Attempt to open Spotify app
+      window.location.href = `spotify:search:${encodedArtist}`;
 
-    const encodedArtist = encodeURIComponent(selectedArtist);
-
-    // Try to open Spotify app
-    window.location.href = `spotify:search:${encodedArtist}`;
-
-    // Fallback to Spotify Web
-    setTimeout(() => {
-      window.location.href = `https://open.spotify.com/search/${encodedArtist}`;
-    }, 800);
-  });
-</script>
-
+      // Fallback to Spotify Web
+      setTimeout(() => {
+        window.location.href = `https://open.spotify.com/search/${encodedArtist}`;
+      }, 800);
     });
   </script>
 </body>
