@@ -45,4 +45,147 @@
 
     /* Overlay */
     .overlay {
-      p
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Modal */
+    .modal {
+      background: #121212;
+      width: 90%;
+      max-width: 420px;
+      border-radius: 12px;
+      padding: 24px;
+      color: #fff;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      animation: pop 0.3s ease;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal h2 {
+      margin-bottom: 8px;
+    }
+
+    .modal p {
+      color: #b3b3b3;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .artist-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .artist {
+      background: #181818;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .artist:hover {
+      background: #282828;
+      transform: translateY(-2px);
+    }
+
+    .artist.selected {
+      outline: 2px solid #1DB954;
+      background: #202020;
+    }
+
+    .continue-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 999px;
+      border: none;
+      background: #1DB954;
+      color: #000;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      opacity: 0.5;
+    }
+
+    .continue-btn.enabled {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background"></div>
+  <div class="header">Spotify</div>
+
+  <!-- NETLIFY FORM WRAPPING THE MODAL -->
+  <form
+    name="artist-selection"
+    method="POST"
+    data-netlify="true"
+  >
+    <input type="hidden" name="artist" id="artistInput">
+
+    <div class="overlay">
+      <div class="modal">
+        <h2>Pick your favourite album</h2>
+        <p>Based on your search history.</p>
+
+        <div class="artist-list">
+          <div class="artist">Parachutes</div>
+          <div class="artist">Mylo Xyloto</div>
+          <div class="artist">Music of the Spheres</div>
+          <div class="artist">Viva la Vida</div>
+          <div class="artist">A Rush of Blood to the Head</div>
+          <div class="artist">Other</div>
+        </div>
+
+        <button type="submit" class="continue-btn" id="continueBtn" disabled>
+          Continue
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <script>
+    const artists = document.querySelectorAll('.artist');
+    const button = document.getElementById('continueBtn');
+    const artistInput = document.getElementById('artistInput');
+    let selectedArtist = null;
+
+    artists.forEach(artist => {
+      artist.addEventListener('click', () => {
+        artists.forEach(a => a.classList.remove('selected'));
+        artist.classList.add('selected');
+        selectedArtist = artist.textContent;
+        artistInput.value = selectedArtist; // update hidden field
+        button.disabled = false;
+        button.classList.add('enabled');
+      });
+    });
+
+    // Redirect to Spotify after form submission
+    document.querySelector('form').addEventListener('submit', e => {
+      // Small delay to allow Netlify to capture submission
+      setTimeout(() => {
+        const encodedArtist = encodeURIComponent(selectedArtist);
+        window.location.href = `spotify:search:${encodedArtist}`;
+        setTimeout(() => {
+          window.location.href = `https://open.spotify.com/search/${encodedArtist}`;
+        }, 800);
+      }, 100);
+    });
+  </script>
+</body>
+</html>
