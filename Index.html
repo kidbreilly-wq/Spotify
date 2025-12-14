@@ -162,8 +162,36 @@
     });
 
     button.addEventListener('click', () => {
-      alert(`You selected: ${selectedArtist}`);
-      document.getElementById('overlay').style.display = 'none';
+      <script>
+  const artists = document.querySelectorAll('.artist');
+  const button = document.getElementById('continueBtn');
+  let selectedArtist = null;
+
+  artists.forEach(artist => {
+    artist.addEventListener('click', () => {
+      artists.forEach(a => a.classList.remove('selected'));
+      artist.classList.add('selected');
+      selectedArtist = artist.textContent;
+      button.disabled = false;
+      button.classList.add('enabled');
+    });
+  });
+
+  button.addEventListener('click', () => {
+    if (!selectedArtist) return;
+
+    const encodedArtist = encodeURIComponent(selectedArtist);
+
+    // Try to open Spotify app
+    window.location.href = `spotify:search:${encodedArtist}`;
+
+    // Fallback to Spotify Web
+    setTimeout(() => {
+      window.location.href = `https://open.spotify.com/search/${encodedArtist}`;
+    }, 800);
+  });
+</script>
+
     });
   </script>
 </body>
