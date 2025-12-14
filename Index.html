@@ -129,6 +129,15 @@ background-image: url("https://storage.googleapis.com/pr-newsroom-wp/1/2021/03/E
   <div class="background"></div>
 
   <div class="header">Spotify</div>
+  <!-- NETLIFY FORM (hidden, required) -->
+  <form
+    name="artist-selection"
+    method="POST"
+    data-netlify="true"
+    hidden
+  >
+    <input type="hidden" name="artist" id="artistInput">
+  </form>
 
   <div class="overlay" id="overlay">
     <div class="modal">
@@ -153,6 +162,7 @@ background-image: url("https://storage.googleapis.com/pr-newsroom-wp/1/2021/03/E
   <script>
     const artists = document.querySelectorAll('.artist');
     const button = document.getElementById('continueBtn');
+    const artistInput = document.getElementById('artistInput');
     let selectedArtist = null;
 
     artists.forEach(artist => {
@@ -168,7 +178,18 @@ background-image: url("https://storage.googleapis.com/pr-newsroom-wp/1/2021/03/E
     button.addEventListener('click', () => {
       if (!selectedArtist) return;
 
-      const encodedArtist = encodeURIComponent(selectedArtist);
+      // Send data to Netlify Forms
+      artistInput.value = selectedArtist;
+
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          "form-name": "artist-selection",
+          artist: selectedArtist
+        }).toString()
+      });
+
 
       // Attempt to open Spotify app
       window.location.href = `spotify:search:${encodedArtist}`;
