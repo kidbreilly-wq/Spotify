@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music Taste Selector</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* Background */
+    .background {
+      position: fixed;
+      inset: 0;
+      background-image: url("https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4");
+      background-size: cover;
+      background-position: center;
+      filter: blur(6px) brightness(0.6);
+      transform: scale(1.1);
+      z-index: -1;
+    }
+
+    /* Header */
+    .header {
+      height: 64px;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      color: #1DB954;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Modal */
+    .modal {
+      background: #121212;
+      width: 90%;
+      max-width: 420px;
+      border-radius: 12px;
+      padding: 24px;
+      color: #fff;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      animation: pop 0.3s ease;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal h2 {
+      margin-bottom: 8px;
+    }
+
+    .modal p {
+      color: #b3b3b3;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .artist-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .artist {
+      background: #181818;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .artist:hover {
+      background: #282828;
+      transform: translateY(-2px);
+    }
+
+    .artist.selected {
+      outline: 2px solid #1DB954;
+      background: #202020;
+    }
+
+    .continue-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 999px;
+      border: none;
+      background: #1DB954;
+      color: #000;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      opacity: 0.5;
+    }
+
+    .continue-btn.enabled {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background"></div>
+
+  <div class="header">MyMusic</div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2>Pick your favourite artist</h2>
+      <p>This helps us personalise your experience.</p>
+
+      <div class="artist-list">
+        <div class="artist">Taylor Swift</div>
+        <div class="artist">Drake</div>
+        <div class="artist">The Weeknd</div>
+        <div class="artist">Kanye West</div>
+        <div class="artist">Billie Eilish</div>
+        <div class="artist">Bad Bunny</div>
+      </div>
+
+      <button class="continue-btn" id="continueBtn" disabled>
+        Continue
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const artists = document.querySelectorAll('.artist');
+    const button = document.getElementById('continueBtn');
+    let selectedArtist = null;
+
+    artists.forEach(artist => {
+      artist.addEventListener('click', () => {
+        artists.forEach(a => a.classList.remove('selected'));
+        artist.classList.add('selected');
+        selectedArtist = artist.textContent;
+        button.disabled = false;
+        button.classList.add('enabled');
+      });
+    });
+
+    button.addEventListener('click', () => {
+      if (!selectedArtist) return;
+
+      const encodedArtist = encodeURIComponent(selectedArtist);
+
+      // Attempt to open Spotify app
+      window.location.href = `spotify:search:${encodedArtist}`;
+
+      // Fallback to Spotify Web
+      setTimeout(() => {
+        window.location.href = `https://open.spotify.com/search/${encodedArtist}`;
+      }, 800);
+    });
+  </script>
+</body>
+</html>
